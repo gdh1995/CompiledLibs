@@ -1,0 +1,5 @@
+diff -r opencv-3.3.0/modules/core/src/persistence.cpp opencv-3.3.0-mod/modules/core/src/persistence.cpp
+51c51
+< #define USE_ZLIB 1
+---
+> #define USE_ZLIB 0
