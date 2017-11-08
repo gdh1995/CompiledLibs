@@ -1,0 +1,107 @@
+diff -r tensorflow/c/c_api.h tensorflow-mod/c/c_api.h
+85a86,90
+> #ifdef TF_CAPI_EXPORT
+> #undef TF_CAPI_EXPORT
+> #endif
+> #define TF_CAPI_EXPORT
+> 
+diff -r tensorflow/c/eager/c_api.h tensorflow-mod/c/eager/c_api.h
+41a42,47
+> #ifdef TF_CAPI_EXPORT
+> #undef TF_CAPI_EXPORT
+> #endif
+> #define TF_CAPI_EXPORT
+> 
+> 
+diff -r tensorflow/contrib/cmake/CMakeLists.txt tensorflow-mod/contrib/cmake/CMakeLists.txt
+35c35
+< option(tensorflow_WIN_CPU_SIMD_OPTIONS "Enables CPU SIMD instructions")
+---
+> # option(tensorflow_WIN_CPU_SIMD_OPTIONS "Enables CPU SIMD instructions")
+36a37
+> set(tensorflow_WIN_CPU_SIMD_OPTIONS "${tensorflow_WIN_CPU_SIMD_OPTIONS}")
+diff -r tensorflow/contrib/cmake/external/re2.cmake tensorflow-mod/contrib/cmake/external/re2.cmake
+43a44
+>         -DRE2_BUILD_TESTING:BOOL=OFF
+diff -r tensorflow/contrib/cmake/tf_tools.cmake tensorflow-mod/contrib/cmake/tf_tools.cmake
+51c51
+<     "${tensorflow_source_dir}/tensorflow/tools/graph_transforms/quantize_nodes.cc"
+---
+>     # "${tensorflow_source_dir}/tensorflow/tools/graph_transforms/quantize_nodes.cc"
+diff -r tensorflow/core/common_runtime/local_device.cc tensorflow-mod/core/common_runtime/local_device.cc
+67c67
+<   port::InfoAboutUnusedCPUFeatures();
+---
+>   //port::InfoAboutUnusedCPUFeatures();
+diff -r tensorflow/core/framework/types.h tensorflow-mod/core/framework/types.h
+73,75c73,75
+< TF_EXPORT extern const char* const DEVICE_CPU;   // "CPU"
+< TF_EXPORT extern const char* const DEVICE_GPU;   // "GPU"
+< TF_EXPORT extern const char* const DEVICE_SYCL;  // "SYCL"
+---
+>  extern const char* const DEVICE_CPU;   // "CPU"
+>  extern const char* const DEVICE_GPU;   // "GPU"
+>  extern const char* const DEVICE_SYCL;  // "SYCL"
+diff -r tensorflow/core/kernels/quantization_utils.h tensorflow-mod/core/kernels/quantization_utils.h
+36c36
+< #include "public/gemmlowp.h"
+---
+> //#include "public/gemmlowp.h"
+899,955d898
+< 
+< // See gemmlowp/internal/multi_thread_gemm.h for the semantics of Execute.
+< class TensorflowGemmlowpWorkersPool {
+<  public:
+<   TensorflowGemmlowpWorkersPool(thread::ThreadPool* workers)
+<       : workers_(workers) {}
+< 
+<   ~TensorflowGemmlowpWorkersPool() {
+<     // This workaround ensures that all worker tasks have exited methods in the
+<     // BlockingCounter. Without this, there is a race where the context is torn
+<     // down while the counter is in use.
+<     counter_to_decrement_when_ready_.Reset(0);
+<   }
+< 
+<   void Execute(const std::vector<gemmlowp::Task*>& tasks) {
+<     assert(!tasks.empty());
+<     assert(workers_ != nullptr);
+<     counter_to_decrement_when_ready_.Reset(tasks.size());
+<     for (gemmlowp::Task* task : tasks) {
+<       workers_->Schedule([this, task]() {
+<         // TODO(cwhipkey): get a local_allocator from a thread local storage.
+<         gemmlowp::Allocator local_allocator;
+<         CHECK(task != nullptr);
+<         task->local_allocator = &local_allocator;
+<         task->Run();
+<         counter_to_decrement_when_ready_.DecrementCount();
+<       });
+<     }
+<     counter_to_decrement_when_ready_.Wait();
+<     for (gemmlowp::Task* task : tasks) {
+<       delete task;
+<     }
+<   }
+< 
+<  private:
+<   thread::ThreadPool* const workers_;
+< 
+<   // The BlockingCounter used to wait for the workers.
+<   gemmlowp::BlockingCounter counter_to_decrement_when_ready_;
+< 
+<   TF_DISALLOW_COPY_AND_ASSIGN(TensorflowGemmlowpWorkersPool);
+< };
+< 
+< class TensorflowGemmContext : public gemmlowp::MultiThreadGemmContextBase {
+<  public:
+<   TensorflowGemmContext(int num_threads, thread::ThreadPool* workers)
+<       : workers_pool_(workers) {
+<     set_max_num_threads(num_threads);
+<   }
+< 
+<   TensorflowGemmlowpWorkersPool* workers_pool() { return &workers_pool_; }
+< 
+<  private:
+<   TensorflowGemmlowpWorkersPool workers_pool_;
+< 
+<   TF_DISALLOW_COPY_AND_ASSIGN(TensorflowGemmContext);
+< };
