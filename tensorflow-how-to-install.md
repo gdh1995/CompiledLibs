@@ -10,11 +10,11 @@ append: after L43:      -DRE2_BUILD_TESTING:BOOL=OFF
 # C / CXX Host: X64
 
 ```
-C:\Program Files\CMake\share\cmake-3.9\ModulesCMakeCXXCompiler.cmake.in
+C:\Program Files\CMake\share\cmake-3.9\Modules\CMakeCXXCompiler.cmake.in
 replace: @CMAKE_CXX_COMPILER@ => D:/Program Files/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.11.25503/bin/HostX64/x64/cl.exe
 replace: @CMAKE_LINKER@ => D:/Program Files/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.11.25503/bin/HostX64/x64/link.exe
 
-C:\Program Files\CMake\share\cmake-3.9\CMakeCCompiler.cmake.in
+C:\Program Files\CMake\share\cmake-3.9\Modules\CMakeCCompiler.cmake.in
 replace: @CMAKE_CXX_COMPILER@ => D:/Program Files/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.11.25503/bin/HostX64/x64/cl.exe
 replace: @CMAKE_LINKER@ => D:/Program Files/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.11.25503/bin/HostX64/x64/link.exe
 ```
